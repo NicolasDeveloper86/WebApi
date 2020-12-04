@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
 
 namespace CoelsaWebApi
 {
@@ -67,7 +65,10 @@ namespace CoelsaWebApi
                     var context = serviceScope.ServiceProvider.GetRequiredService<CoelsaContext>();
                     var contextEnsureDeleteAndMigrate = Configuration.GetSection("ContextOptions").Get<ContextOptions>();
 
-                    if (!context.Database.ProviderName.Contains("Microsoft.EntityFrameworkCore.InMemory") && contextEnsureDeleteAndMigrate.ContextEnsureDeleteAndMigrate)
+
+                    bool isNotInMemory = !context.Database.IsInMemory();
+
+                    if (isNotInMemory && contextEnsureDeleteAndMigrate.ContextEnsureDeleteAndMigrate)
                     {
                         context.Database.EnsureDeleted();
                         context.Database.Migrate();
