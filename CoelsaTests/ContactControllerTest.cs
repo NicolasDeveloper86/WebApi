@@ -1,5 +1,7 @@
 ﻿using CoelsaWebApi.Controllers;
 using CoelsaWebApi.Services;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -14,11 +16,13 @@ namespace CoelsaTests
         private ContactController _controller;
 
         private Mock<IContactService> _contactServiceMock;
+        private Mock<NullLoggerFactory> _loggerFactoryMock;
 
         private void Init()
         {
             _contactServiceMock = new Mock<IContactService>();
-            _controller = new ContactController(_contactServiceMock.Object);
+            _loggerFactoryMock = new Mock<NullLoggerFactory>();
+            _controller = new ContactController(_contactServiceMock.Object, _loggerFactoryMock.Object);
         }
 
         [Fact]

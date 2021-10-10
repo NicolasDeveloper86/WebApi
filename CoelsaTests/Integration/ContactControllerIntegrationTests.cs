@@ -26,7 +26,7 @@ namespace CoelsaTests.Integration
         {
             var client = await _factory.CreateHttpClient();
 
-            var response = await client.GetAsync("/api/contacts");
+            var response = await client.GetAsync("/api/contact");
 
             var content = await response.Content.ReadAsStringAsync();
 
@@ -68,10 +68,20 @@ namespace CoelsaTests.Integration
 
             var content = await response.Content.ReadAsStringAsync();
 
-            var contentSerialized = JsonConvert.DeserializeObject<bool>(content);
-
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            Assert.True(contentSerialized);
+        }
+
+        [Fact]
+        public async Task DeleteContact_Should_Return_Not_Found()
+        {
+            var client = await _factory.CreateHttpClient();
+
+            var response = await client.DeleteAsync("/api/contact/1000");
+
+            var content = await response.Content.ReadAsStringAsync();
+
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         [Fact]
@@ -89,7 +99,7 @@ namespace CoelsaTests.Integration
 
             var contentSerialized = JsonConvert.DeserializeObject<Contact>(content);
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             Assert.NotEqual(0, contentSerialized.Id);
         }
     }

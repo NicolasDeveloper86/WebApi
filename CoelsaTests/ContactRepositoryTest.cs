@@ -2,6 +2,9 @@ using CoelsaCommon.Models;
 using CoelsaData;
 using CoelsaData.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +18,7 @@ namespace CoelsaTests
     {
         private CoelsaContext _coelsaContext;
         private ContactRepository _contactRepository;
+        private Mock<NullLoggerFactory> _loggerFactoryMock;
 
         private void Init()
         {
@@ -25,7 +29,8 @@ namespace CoelsaTests
             _coelsaContext.Database.EnsureDeleted();
             _coelsaContext.Database.EnsureCreated();
 
-            _contactRepository = new ContactRepository(_coelsaContext);
+            _loggerFactoryMock = new Mock<NullLoggerFactory>();
+            _contactRepository = new ContactRepository(_coelsaContext, _loggerFactoryMock.Object);
         }
 
         [Fact]
